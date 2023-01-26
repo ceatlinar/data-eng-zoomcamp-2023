@@ -9,20 +9,15 @@ Now run the command to get help on the "docker build" command
 
 Which tag has the following text? - Write the image ID to the file
 
-- imageid string
-- iidfile string
-- idimage string
-- <span style="color:lime"> idfile string </span>
+idfile string
 
 
 ![](images/docker_build_help.png)
 
 ##  Question 2: Understanding docker first run 
 Run docker with the python:3.9 image in an interactive mode and the entrypoint of bash. Now check the python modules that are installed ( use pip list). How many python packages/modules are installed?
-- 1
-- 6
-- <span style="color:lime"> 3 </span>
-- 7
+
+3
 
 ![](images/docker_run_python_3_9.png)
  
@@ -30,10 +25,8 @@ Run docker with the python:3.9 image in an interactive mode and the entrypoint o
 How many taxi trips were totally made on January 15?
 Tip: started and finished on 2019-01-15.
 Remember that lpep_pickup_datetime and lpep_dropoff_datetime columns are in the format timestamp (date and hour+min+sec) and not in date.
-- 20689
-- <span style="color:lime"> 20530 </span>
-- 17630
-- 21090
+
+20530
 
 ```sql
 SELECT COUNT(1)
@@ -47,10 +40,7 @@ WHERE DATE(lpep_pickup_datetime) = '2019-01-15'
 ## Question 4. Largest trip for each day
 Which was the day with the largest trip distance Use the pick up time for your calculations.
 
-- 2019-01-18
-- 2019-01-28
-- <span style="color:lime"> 2019-01-15 </span>
-- 2019-01-10
+2019-01-15
 
 ```
 WITH maks_distance_day AS (SELECT DATE(lpep_pickup_datetime) AS day,
@@ -67,10 +57,7 @@ FROM maks_distance_day;
 ## Question 5. The number of passengers
 In 2019-01-01 how many trips had 2 and 3 passengers?
 
-- 2: 1282 ; 3: 266
-- 2: 1532 ; 3: 126
-- <span style="color:lime"> 2: 1282 ; 3: 254 </span>
-- 2: 1282 ; 3: 274
+2: 1282 ; 3: 254
 
 ```
 SELECT passenger_count,
@@ -85,10 +72,26 @@ GROUP BY passenger_count
 For the passengers picked up in the Astoria Zone which was the drop off zone that had the largest tip? We want the name of the zone, not the id.
 Note: it's not a typo, it's tip , not trip
 
-- Central Park
-- Jamaica
-- South Ozone Park
-- <span style="color:lime"> Long Island City/Queens Plaza </span>
+Long Island City/Queens Plaza
+
+```
+WITH astoria_zone_id AS (SELECT "LocationID"
+                         FROM taxi_zone
+                         WHERE "Zone" = 'Astoria'
+                         ),
+
+    maks_tip_trip_id AS (SELECT "DOLocationID"
+                         FROM green_taxi_trips gtt
+                         WHERE gtt."PULocationID" = (SELECT * FROM astoria_zone_id)
+                         ORDER BY tip_amount DESC
+                         LIMIT 1
+                         )
+
+SELECT "Zone"
+FROM taxi_zone
+WHERE "LocationID" = (SELECT * FROM maks_tip_trip_id)
+```
+
 
 ## terraform apply
 ```
